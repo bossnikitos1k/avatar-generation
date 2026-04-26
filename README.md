@@ -32,7 +32,7 @@
 
 -   [Docker](https://www.docker.com/get-started) и Docker Compose.
 -   Git для клонирования репозитория.
-
+- wsl(если windows)
 ### Шаг 1: Клонирование репозитория
 
 ```bash
