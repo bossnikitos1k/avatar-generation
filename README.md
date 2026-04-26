@@ -37,7 +37,7 @@
 
 ```bash
 git clone https://github.com/bossnikitos1k/avatar-generation.git
-cd [НАЗВАНИЕ_ПАПКИ_ПРОЕКТА]
+cd avatar-generation
 ```
 
 ### Шаг 2: (Опционально) Добавление своей музыки
