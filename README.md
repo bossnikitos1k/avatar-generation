@@ -36,7 +36,7 @@
 ### Шаг 1: Клонирование репозитория
 
 ```bash
-git clone [ССЫЛКА_НА_ВАШ_РЕПОЗИТОРИЙ_НА_GITHUB]
+git clone https://github.com/bossnikitos1k/avatar-generation.git
 cd [НАЗВАНИЕ_ПАПКИ_ПРОЕКТА]
 ```
 
