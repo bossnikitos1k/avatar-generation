@@ -1,0 +1,103 @@
+version: "3.8"
+
+services:
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    networks:
+      - capcut-mate-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  capcut-mate:
+    image: gogoshine/capcut-mate:latest
+    container_name: capcut-mate
+    platform: linux/amd64
+    ports:
+      - "30000:30000"
+    volumes:
+      - ./output:/app/output
+    environment:
+      - DRAFT_URL=http://backend:8000/openapi/capcut-mate/v1/get_draft
+      - DOWNLOAD_URL=http://linux/
+      - LOG_LEVEL=INFO
+    networks:
+      - capcut-mate-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+    restart: unless-stopped
+
+  linux:
+    image: gogoshine/linux:latest
+    container_name: linux
+    platform: linux/amd64
+    ports:
+      - "80:80"
+    volumes:
+      - ./output:/app/www/output
+    networks:
+      - capcut-mate-network
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    container_name: backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./generated_images:/app/generated_images
+      - ./generated_audio:/app/generated_audio
+      - ./generated_videos:/app/generated_videos
+      - ./uploads:/app/uploads
+    environment:
+      # GEMINI_API_KEY больше не нужен
+      - CAPCUT_MATE_URL=http://capcut-mate:30000
+      - REDIS_URL=redis://redis:6379/0
+      - LOG_LEVEL=INFO
+    networks:
+      - capcut-mate-network
+    depends_on:
+      redis:
+        condition: service_healthy
+      capcut-mate:
+        condition: service_started
+
+  worker:
+    build: ./backend
+    container_name: worker
+    restart: unless-stopped
+    command: celery -A app.tasks.celery_app worker --loglevel=info
+    volumes:
+      - ./generated_images:/app/generated_images
+      - ./generated_audio:/app/generated_audio
+      - ./generated_videos:/app/generated_videos
+      - ./uploads:/app/uploads
+    environment:
+      # GEMINI_API_KEY больше не нужен
+      - CAPCUT_MATE_URL=http://capcut-mate:30000
+      - REDIS_URL=redis://redis:6379/0
+      - LOG_LEVEL=INFO
+    networks:
+      - capcut-mate-network
+    depends_on:
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_started
+
+networks:
+  capcut-mate-network:
+    driver: bridge
+
+
+
+
+
+

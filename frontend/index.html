@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Avatar Studio</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-layout">
+      <aside class="sidebar">
+        <h1>Avatar Studio</h1>
+        <p class="sidebar-subtitle">Генерация анимированных аватаров в стиле Money Printer Turbo</p>
+
+        <form id="generate-form">
+          <div class="tabs" id="tabs">
+            <button type="button" class="tab-button active" data-tab="basic">Основные</button>
+            <button type="button" class="tab-button" data-tab="style">Стиль</button>
+            <button type="button" class="tab-button" data-tab="music">Музыка</button>
+            <button type="button" class="tab-button" data-tab="subtitles">Субтитры</button>
+            <button type="button" class="tab-button" data-tab="scenes">Сцены</button>
+          </div>
+
+          <section class="tab-panel active" data-panel="basic">
+            <label for="text-input">Текст озвучки</label>
+            <textarea id="text-input" placeholder="Введите текст для озвучки..."></textarea>
+            <div class="hint-row">
+              <span id="char-counter">0 символов</span>
+              <span id="duration-estimate">~ 00:00</span>
+            </div>
+
+            <label for="image-input">Изображение персонажа (опционально)</label>
+            <input type="file" id="image-input" accept="image/png,image/jpeg,image/webp" />
+
+            <label for="voice-select">Голос</label>
+            <select id="voice-select">
+              <option value="ru">Русский (стандарт)</option>
+              <option value="ru-male">Русский (замедленный)</option>
+            </select>
+          </section>
+
+          <section class="tab-panel" data-panel="style">
+            <label for="style-select">Стиль персонажа</label>
+            <select id="style-select">
+              <option value="cartoon_furry">Мультяшный фурри</option>
+              <option value="anime">Аниме</option>
+              <option value="realistic">Реалистичный</option>
+              <option value="pixel">Пиксель-арт</option>
+            </select>
+          </section>
+
+          <section class="tab-panel" data-panel="music">
+            <label class="inline-control">
+              <input type="checkbox" id="music-enabled" />
+              <span>Фоновая музыка</span>
+            </label>
+            <label for="music-volume">Громкость музыки: <span id="music-volume-label">30%</span></label>
+            <input type="range" id="music-volume" min="0" max="100" value="30" />
+          </section>
+
+          <section class="tab-panel" data-panel="subtitles">
+            <label class="inline-control">
+              <input type="checkbox" id="subtitles-enabled" />
+              <span>Добавить субтитры</span>
+            </label>
+            <label for="subtitle-color">Цвет текста</label>
+            <input type="color" id="subtitle-color" value="#ffffff" />
+            <label for="subtitle-size">Размер шрифта</label>
+            <input type="number" id="subtitle-size" min="16" max="72" value="42" />
+          </section>
+
+          <section class="tab-panel" data-panel="scenes">
+            <div class="scene-actions">
+              <button type="button" id="add-scene-btn" class="secondary-button">Добавить сцену</button>
+            </div>
+            <div id="scenes-list" class="scenes-list"></div>
+          </section>
+
+          <button id="generate-btn" type="submit">
+            <span class="btn-text">Сгенерировать</span>
+            <span class="btn-loader" aria-hidden="true"></span>
+          </button>
+        </form>
+      </aside>
+
+      <main class="content">
+        <section class="card preview-card">
+          <h2>Предпросмотр</h2>
+          <img id="preview-image" alt="Предпросмотр аватара" />
+          <video id="video-player" controls></video>
+          <div class="result-actions">
+            <a id="download-button" download>Скачать</a>
+            <button id="share-button" type="button" class="secondary-button">Поделиться</button>
+          </div>
+        </section>
+
+        <section id="status-container" class="card" style="display: none">
+          <div class="spinner"></div>
+          <p id="status-text">Ожидание...</p>
+          <div class="progress-bar"><div id="progress-fill"></div></div>
+        </section>
+
+        <section id="error-container" class="card error-card" style="display: none"></section>
+
+        <section class="card gallery-card">
+          <h2>Галерея и история генераций</h2>
+          <div id="history-list" class="history-list"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+
